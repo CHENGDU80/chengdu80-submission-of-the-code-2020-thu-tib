@@ -5,5 +5,5 @@ chengdu80-submission-of-the-code-2020-thu-tib created by GitHub Classroom
 ## 技术架构
 ### SpringBoot + D3.js
 ## 访问地址
-### localhost/index.html
+### http://ip/index.html
 
