@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script src="./js/d3.v4.min.js"></script><!-- Create a div where the graph will take place -->
+<div id="predict"></div>
+
+<script>
+    // set the dimensions and margins of the graph
+    var margin = {top: 10, right: 30, bottom: 40, left: 50},
+        width = 520 - margin.left - margin.right,
+        height = 520 - margin.top - margin.bottom;
+
+    // append the svg object to the body of the page
+    var svg_predict = d3.select("#network")
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform",
+            "translate(" + margin.left + "," + margin.top + ")")
+
+    // Add the grey background that makes ggplot2 famous
+    svg_predict
+        .append("rect")
+        .attr("x",0)
+        .attr("y",0)
+        .attr("height", height)
+        .attr("width", height)
+        .style("fill", "EBEBEB")
+
+    d3.csv("./data/predict.csv", function(data) {
+
+        // Add X axis
+        var x = d3.scaleLinear()
+            .domain([1, 30])
+            .range([ 0, width ])
+        svg_predict.append("g")
+            .attr("transform", "translate(0," + height + ")")
+            .call(d3.axisBottom(x).tickSize(-height*1.3).ticks(10))
+            .select(".domain").remove()
+
+        // Add Y axis
+        var y = d3.scaleLinear()
+            .domain([-100, 100])
+            .range([ height, 0])
+            .nice()
+        svg_predict.append("g")
+            .call(d3.axisLeft(y).tickSize(-width*1.3).ticks(7))
+            .select(".domain").remove()
+
+        // Customization
+        svg_predict.selectAll(".tick line").attr("stroke", "white")
+
+        // Add X axis label:
+        svg_predict.append("text")
+            .attr("text-anchor", "end")
+            .attr("x", width/2 + margin.left)
+            .attr("y", height + margin.top + 20)
+            .text("day");
+
+        // Y axis label:
+        svg_predict.append("text")
+            .attr("text-anchor", "end")
+            .attr("transform", "rotate(-90)")
+            .attr("y", -margin.left + 20)
+            .attr("x", -margin.top - height/2 + 20)
+            .text("predict")
+
+        // Color scale: give me a specie name, I return a color
+        var color = d3.scaleOrdinal()
+            .domain(["0", "1" ])
+            .range([ "#F8766D", "#00BA38"])
+
+        // Add dots
+        svg_predict.append('g')
+            .selectAll("dot")
+            .data(data)
+            .enter()
+            .append("circle")
+            .attr("cx", function (d) { console.log(d.date);
+                return x(d.date); } )
+            .attr("cy", function (d) { return y(d.OPENPRC); } )
+            .attr("r", 5)
+            .style("fill", function (d) { return color(d.prediction) } )
+
+    })
+
+
+</script>
+</body>
+</html>
