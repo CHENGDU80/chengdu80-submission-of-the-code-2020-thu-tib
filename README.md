@@ -5,5 +5,9 @@
 ## 技术架构
 ### SpringBoot + D3.js +
 
+### thu-web
+### thu-server
+### thu-algorithm
+
 
 
